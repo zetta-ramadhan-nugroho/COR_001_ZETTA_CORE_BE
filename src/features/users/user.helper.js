@@ -85,6 +85,7 @@ async function LoginHelper(input, tenant_id) {
       token,
       user: {
         _id: user._id,
+        userId: user._id.toString(),
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
@@ -92,6 +93,8 @@ async function LoginHelper(input, tenant_id) {
         position: user.position,
         status: user.status,
         role: roleSlug,
+        tenantId: tenant_id,
+        permissions: permissions,
       },
     };
   } catch (error) {
@@ -486,7 +489,16 @@ async function SwitchTenantHelper(user_id, target_tenant_id) {
       { expiresIn: config.jwt_expires_in }
     );
 
-    return { token, user: { ...user, role: roleSlug } };
+    return {
+      token,
+      user: {
+        ...user,
+        userId: user._id.toString(),
+        tenantId: target_tenant_id,
+        role: roleSlug,
+        permissions: permissions,
+      },
+    };
   } catch (error) {
     if (error instanceof AppError) throw error;
     await ErrorLogModel.create({

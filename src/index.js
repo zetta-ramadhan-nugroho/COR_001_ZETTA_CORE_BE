@@ -12,6 +12,9 @@ const { GraphQLScalarType, Kind } = require('graphql');
 const { connectDatabase } = require('./core/db');
 const config = require('./core/config');
 
+// *************** IMPORT MODEL ***************
+const TenantModel = require('./features/tenants/tenant.model');
+
 // *************** IMPORT SCHEMA ***************
 const { typeDefs } = require('./schema/index');
 
@@ -155,7 +158,7 @@ async function startServer() {
 
   // *************** Apply middleware
   app.use(
-    '/graphql',
+    ['/:tenant/graphql', '/graphql'],
     cors({
       origin: config.app_base_url,
       credentials: true,
@@ -165,12 +168,29 @@ async function startServer() {
       /**
        * Builds the GraphQL context from the Express request.
        * Extracts JWT and injects user_id, tenant_id, role, permissions.
+       * Also resolves tenant_id from URL slug or header if not in JWT.
        *
        * @param {Object} param0 - { req }
        * @returns {Object} GraphQL context
        */
       context: async ({ req }) => {
         const authContext = buildAuthContext(req);
+
+        // *************** Fallback: Resolve tenant_id from URL slug or header (useful for login)
+        if (!authContext.tenant_id) {
+          const tenantSlug = req.params.tenant || req.headers['x-tenant-slug'];
+          if (tenantSlug) {
+            try {
+              const tenant = await TenantModel.findOne({ slug: tenantSlug.toLowerCase(), deleted_at: null }).select('_id').lean();
+              if (tenant) {
+                authContext.tenant_id = tenant._id.toString();
+              }
+            } catch (err) {
+              console.error('[SERVER] Tenant resolution failed:', err.message);
+            }
+          }
+        }
+
         return {
           ...authContext,
           req, // *************** Pass raw request for service-auth header access
