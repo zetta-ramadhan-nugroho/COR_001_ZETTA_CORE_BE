@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cd:*)",
+      "Bash(node --check src/core/error.js)",
+      "Bash(node --check src/core/db.js)",
+      "Bash(node --check src/core/config.js)",
+      "Bash(node --check src/core/audit_logger.js)",
+      "Bash(node --check src/core/error_log.model.js)",
+      "Bash(node --check src/middlewares/auth/auth_request.middleware.js)",
+      "Bash(node --check src/middlewares/auth/service_auth.middleware.js)",
+      "Bash(node --check src/shared/utils/tenant_guard.js)",
+      "Bash(node --check src/shared/utils/permission_check.js)",
+      "Bash(node --check src/shared/validators/common.validator.js)",
+      "Bash(for f:*)",
+      "Bash(do node:*)",
+      "Bash(echo \"OK: $f\")",
+      "Bash(echo \"FAIL: $f\")",
+      "Bash(done)",
+      "Bash(node --check src/features/foundational_data/schools/school.helper.js)",
+      "Bash(node --check src/features/students/student.helper.js)",
+      "Bash(node --check src/features/foundational_data/campuses/campus.helper.js)",
+      "Bash(node --check src/features/programs/program.helper.js)",
+      "Bash(node --check src/features/users/user.helper.js)",
+      "Bash(node --check src/features/roles/role.helper.js)",
+      "Bash(node --check src/features/financial_settings/additional_fees/additional_fee.helper.js)",
+      "Bash(node --check src/features/financial_settings/payment_modalities/payment_modality.helper.js)",
+      "Bash(node --check src/features/financial_settings/registration_profiles/registration_profile.helper.js)",
+      "Bash(node --check src/schema/index.js)",
+      "Bash(node --check src/index.js)",
+      "Bash(node -e \":*)"
+    ]
+  }
+}
